@@ -1,0 +1,9 @@
+<library path="lib/libudp_input">
+  <class name="udp_input/UdpInputNodelet"
+         type="udp_input::UdpInputNodelet"
+         base_class_type="nodelet::Nodelet">
+    <description>
+      Listens on a UDP port and publishing UDP messages.
+    </description>
+  </class>
+</library>
