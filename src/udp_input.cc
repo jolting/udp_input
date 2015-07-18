@@ -56,6 +56,8 @@ public:
   UdpInput(short port, ros::Publisher pub)
       : io_service_(), socket_(io_service_, udp::endpoint(udp::v4(), port)),
         pub_(pub) {
+    boost::asio::socket_base::broadcast option(true);
+    socket_.set_option(option);
     do_receive();
     thread_ =
         boost::thread(boost::bind(&boost::asio::io_service::run, &io_service_));
