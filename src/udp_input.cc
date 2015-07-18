@@ -96,7 +96,6 @@ private:
 class UdpInputNodelet : public nodelet::Nodelet {
 public:
   UdpInputNodelet() {}
-  ~UdpInputNodelet() { delete udpInput_; }
 
 private:
   virtual void onInit() {
@@ -104,15 +103,15 @@ private:
     ros::NodeHandle &private_nh = getPrivateNodeHandle();
     private_nh.getParam("port", port);
     service = private_nh.advertiseService("send", &UdpInputNodelet::send, this);
-    udpInput_ = new UdpInput(
-        port, private_nh.advertise<udp_input::UdpPacket>("udp", 10));
+    udpInput_.reset(new UdpInput(
+        port, private_nh.advertise<udp_input::UdpPacket>("udp", 10)));
   }
   bool send(UdpSend::Request &request, UdpSend::Response &) {
     udpInput_->send(request.data, request.address, request.dstPort);
     return true;
   }
 
-  UdpInput *udpInput_;
+  std::unique_ptr<UdpInput> udpInput_;
   ros::ServiceServer service;
 };
 PLUGINLIB_DECLARE_CLASS(udp_input, UdpInputNodelet, udp_input::UdpInputNodelet,
